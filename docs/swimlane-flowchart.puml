@@ -1,0 +1,155 @@
+@startuml Corporate_Banking_Login_Flow
+!theme plain
+title Corporate Internet Banking - User Authentication Flow
+
+|User|
+start
+:Access Banking Portal;
+:View Login Page;
+
+|System|
+:Display Login Form;
+:Show Organisation ID dropdown;
+:Show User ID field;
+:Show Password field;
+
+|User|
+:Enter Organisation ID;
+:Enter User ID;
+:Enter Password;
+:Click Login;
+
+|System|
+:Validate Credentials;
+
+if (Credentials Valid?) then (Yes)
+  :Create Session;
+  :Redirect to Dashboard;
+  stop
+else (No)
+  if (Account Locked?) then (Yes)
+    :Show Account Locked Message;
+    |User|
+    :Click "Reset Password or Unlock Account";
+    |System|
+    :Redirect to Reset Flow;
+    
+    |#AntiqueWhite|Reset Password Flow|
+    :Show Step 1: Login Credentials;
+    |User|
+    :Enter Organisation ID;
+    :Enter User ID;
+    :Click Next;
+    
+    |System|
+    :Validate Identity;
+    if (Identity Valid?) then (Yes)
+      :Show Step 2: 2-Factor Auth;
+      |User|
+      :Complete 2FA;
+      :Click Next;
+      
+      |System|
+      :Show Step 3: Password Reset;
+      |User|
+      :Set New Password;
+      :Confirm Password;
+      :Click Complete;
+      
+      |System|
+      :Update Password;
+      :Send Confirmation Email;
+      :Unlock Account;
+      stop
+    else (No)
+      :Show Validation Error;
+      :Return to Step 1;
+    endif
+    
+  else (No)
+    if (New User?) then (Yes)
+      |User|
+      :Click "Activate New User Access";
+      |System|
+      :Redirect to Activation Flow;
+      
+      |#LightBlue|Account Activation Flow|
+      :Show Step 1: Enter Credentials;
+      |User|
+      :Enter Organisation ID from Email;
+      :Enter User ID from Email;
+      :Click Next;
+      
+      |System|
+      :Validate Activation Tokens;
+      if (Tokens Valid?) then (Yes)
+        :Show Step 2: Verify Number;
+        |User|
+        :Enter Phone Verification;
+        :Click Next;
+        
+        |System|
+        :Show Step 3: Set Password;
+        |User|
+        :Create New Password;
+        :Confirm Password;
+        :Click Next;
+        
+        |System|
+        :Show Step 4: Activate Token;
+        |User|
+        :Activate Hardware Token;
+        :Complete Setup;
+        
+        |System|
+        :Activate Account;
+        :Send Welcome Email;
+        :Redirect to Login;
+        stop
+      else (No)
+        :Show Token Error;
+        :Return to Step 1;
+      endif
+      
+    else (No)
+      |User|
+      :Click "Need Help?";
+      |System|
+      :Show Help Options;
+      
+      |#LightGreen|Help System Flow|
+      if (Fraud Report?) then (Yes)
+        :Show Fraud Report Form;
+        |User|
+        :Submit Fraud Details;
+        |System|
+        :Process Fraud Report;
+        :Send Confirmation;
+        stop
+      else if (Block Account?) then (Yes)
+        :Show Account Block Options;
+        |User|
+        :Select Accounts to Block;
+        :Confirm Block Request;
+        |System|
+        :Block Selected Accounts;
+        :Send Notification;
+        stop
+      else (FAQ)
+        :Show FAQ Categories;
+        |User|
+        :Browse FAQ Items;
+        if (Found Answer?) then (Yes)
+          stop
+        else (No)
+          :Contact Support;
+          |System|
+          :Route to Live Support;
+          stop
+        endif
+      endif
+    endif
+  endif
+endif
+
+@enduml

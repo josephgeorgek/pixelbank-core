@@ -2,12 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Corporate Banking Design System - Redbank */
 
 @layer base {
   :root {
+    /* Brand Colors - Redbank Orange/Red Gradient Theme */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -17,41 +16,52 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary Brand - Redbank Orange/Red */
+    --primary: 14 88% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 14 88% 48%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Professional Gray */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 9% 46%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Banking UI Colors */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 9% 46%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Status Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 120 60% 50%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* UI Elements */
+    --border: 220 13% 91%;
+    --input: 0 0% 100%;
+    --input-border: 220 13% 91%;
+    --ring: 14 88% 55%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Brand Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(14, 88%, 55%), hsl(0, 75%, 50%));
+    --gradient-subtle: linear-gradient(135deg, hsl(14, 88%, 55%) 0%, hsl(0, 75%, 50%) 100%);
+    
+    /* Banking Shadows */
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -65,7 +75,7 @@ All colors MUST be HSL.
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 14 88% 55%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -100,6 +110,42 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+
+  /* Banking Typography */
+  .text-banking-title {
+    @apply text-2xl font-semibold text-foreground;
+  }
+
+  .text-banking-subtitle {
+    @apply text-base text-muted-foreground;
+  }
+
+  .text-banking-label {
+    @apply text-sm font-medium text-foreground;
+  }
+
+  /* Banking Form Elements */
+  .banking-input {
+    @apply w-full px-3 py-2 border border-input-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent;
+  }
+
+  .banking-button-primary {
+    background: var(--gradient-primary);
+    @apply text-primary-foreground font-medium py-2 px-6 rounded-md shadow-sm hover:shadow-md transition-all duration-200;
+  }
+
+  .banking-card {
+    @apply bg-card rounded-lg shadow-card border border-border;
+  }
+
+  /* Banking Layout */
+  .banking-container {
+    @apply max-w-md mx-auto;
+  }
+
+  .banking-grid {
+    @apply grid grid-cols-1 lg:grid-cols-2 min-h-screen;
   }
 }
