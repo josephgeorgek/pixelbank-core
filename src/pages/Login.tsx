@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginLayout from '@/components/LoginLayout';
-import HelpPopup from '@/components/HelpPopup';
+
 import { BankingCard, BankingCardContent } from '@/components/ui/banking-card';
 import { BankingInput } from '@/components/ui/banking-input';
 import { BankingButton } from '@/components/ui/banking-button';
@@ -29,9 +29,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <>
-      <HelpPopup />
-      <LoginLayout>
+    <LoginLayout>
         <BankingCard className="w-full">
           <BankingCardContent className="p-8">
             <div className="text-center mb-8">
@@ -141,7 +139,6 @@ const Login: React.FC = () => {
           </BankingCardContent>
         </BankingCard>
       </LoginLayout>
-    </>
   );
 };
 
