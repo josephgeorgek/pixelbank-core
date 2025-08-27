@@ -65,11 +65,24 @@ const Login: React.FC = () => {
             justifyContent: 'center',
             alignItems: 'flex-start',
             padding: { xs: 3, md: 6 },
-            background: 'linear-gradient(135deg, rgba(232, 94, 0, 0.9) 0%, rgba(211, 47, 47, 0.9) 100%)',
+            backgroundImage: `url('/design/1.Login_page.png')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'left center',
+            backgroundRepeat: 'no-repeat',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              zIndex: 1,
+            },
           }}
         >
           {/* Brand Logo */}
-          <Box sx={{ mb: 4 }}>
+          <Box sx={{ mb: 4, position: 'relative', zIndex: 2 }}>
             <Typography
               variant="h3"
               sx={{
@@ -77,6 +90,7 @@ const Login: React.FC = () => {
                 fontWeight: 600,
                 fontSize: '28px',
                 letterSpacing: '1px',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
               Redbank
@@ -84,7 +98,7 @@ const Login: React.FC = () => {
           </Box>
 
           {/* Hero Content */}
-          <Box sx={{ maxWidth: '400px' }}>
+          <Box sx={{ maxWidth: '400px', position: 'relative', zIndex: 2 }}>
             <Typography
               variant="h1"
               sx={{
@@ -93,6 +107,7 @@ const Login: React.FC = () => {
                 fontSize: { xs: '32px', md: '40px' },
                 lineHeight: '1.2',
                 mb: 3,
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
               Welcome to Business Banking
@@ -100,10 +115,11 @@ const Login: React.FC = () => {
             <Typography
               variant="body1"
               sx={{
-                color: 'rgba(255, 255, 255, 0.9)',
+                color: 'rgba(255, 255, 255, 0.95)',
                 fontSize: '18px',
                 lineHeight: '1.6',
                 mb: 4,
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
               }}
             >
               Secure, efficient, and comprehensive banking solutions for your business needs.
