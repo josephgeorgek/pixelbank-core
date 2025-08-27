@@ -1,6 +1,5 @@
 import React from 'react';
 import BrandLogo from './BrandLogo';
-import bankingHeroBg from '@/assets/banking-hero-bg.jpg';
 
 interface LoginLayoutProps {
   children: React.ReactNode;
@@ -16,7 +15,7 @@ const LoginLayout: React.FC<LoginLayoutProps> = ({
       {/* Left Side - Hero Image with Building */}
       <div 
         className="relative hidden lg:flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: `url(${bankingHeroBg})` }}
+        style={{ backgroundImage: `url(/lovable-uploads/37f24251-93f6-4104-b389-34fb8d2bd5ff.png)` }}
       >
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-primary opacity-80"></div>
