@@ -65,7 +65,7 @@ const Login: React.FC = () => {
             justifyContent: 'center',
             alignItems: 'flex-start',
             padding: { xs: 3, md: 6 },
-            backgroundImage: `url('/design/1.Login_page.png')`,
+            backgroundImage: `url('/lovable-uploads/c41bb14e-1d4b-4b85-a798-928a0291c4fd.png')`,
             backgroundSize: 'cover',
             backgroundPosition: 'left center',
             backgroundRepeat: 'no-repeat',
