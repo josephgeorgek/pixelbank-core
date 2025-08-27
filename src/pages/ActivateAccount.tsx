@@ -27,8 +27,9 @@ const ActivateAccount: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Activate account request:', formData);
-    // Process activation logic
+    if (formData.organisationId && formData.userId) {
+      navigate('/verify-number');
+    }
   };
 
   const handleBack = () => {

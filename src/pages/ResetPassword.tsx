@@ -26,8 +26,9 @@ const ResetPassword: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Reset password request:', formData);
-    // Process reset password logic
+    if (formData.organisationId && formData.userId) {
+      navigate('/reset-verify-number');
+    }
   };
 
   const handleBack = () => {
