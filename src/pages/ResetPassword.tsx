@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LoginLayout from '@/components/LoginLayout';
-import WizardSteps from '@/components/WizardSteps';
-import { BankingCard, BankingCardContent, BankingCardHeader, BankingCardTitle } from '@/components/ui/banking-card';
-import { BankingInput } from '@/components/ui/banking-input';
-import { BankingButton } from '@/components/ui/banking-button';
 import { Button } from '@/components/ui/button';
+import { BankingInput } from '@/components/ui/banking-input';
+import { AlertTriangle } from 'lucide-react';
+import WizardSteps from '@/components/WizardSteps';
 
 const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    organisationId: '',
-    userId: ''
+    organisationId: 'EsolAlpha',
+    userId: 'PeterAlpha'
   });
+  const [hasError, setHasError] = useState(true);
 
   const steps = [
-    { number: 1, label: 'Login credentials', isActive: false, isCompleted: true },
+    { number: 1, label: 'Login credentials', isActive: true, isCompleted: false },
     { number: 2, label: '2-step verification', isActive: false, isCompleted: false },
-    { number: 3, label: 'Password reset', isActive: true, isCompleted: false }
+    { number: 3, label: 'Password reset', isActive: false, isCompleted: false }
   ];
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,96 +36,83 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <LoginLayout>
-      <div className="w-full">
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Left sidebar with steps */}
+      <div className="w-80 bg-white border-r border-gray-200 p-8">
         <WizardSteps steps={steps} />
+      </div>
 
-        <BankingCard>
-          <BankingCardHeader>
-            <BankingCardTitle className="text-center">
-              RESET PASSWORD OR UNLOCK ACCOUNT
-            </BankingCardTitle>
-          </BankingCardHeader>
-          
-          <BankingCardContent className="p-8">
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-2">Enter your login credentials</h2>
-              <p className="text-banking-subtitle mb-1">
-                We need your login credentials to unlock your account. Organisation ID and User ID when your account was opened.
-              </p>
-              <p className="text-banking-subtitle">
-                Please check your registered email for these login credentials.
-              </p>
-            </div>
+      {/* Main content */}
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-normal text-gray-900 mb-2">RESET PASSWORD OR UNLOCK ACCOUNT</h1>
+          </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Organisation ID */}
-                <div>
-                  <label className="text-banking-label block mb-2">
-                    Organisation ID
-                  </label>
-                  <BankingInput
-                    type="text"
-                    value={formData.organisationId}
-                    onChange={(e) => handleInputChange('organisationId', e.target.value)}
-                    placeholder="JOSEFINES"
-                    required
-                  />
-                </div>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+            <h2 className="text-xl font-medium text-gray-900 mb-2">Enter your login credentials</h2>
+            <p className="text-gray-600 text-sm mb-6">
+              We sent you an email containing your unique Organisation ID and User ID when your account was opened. 
+              Please check your registered email for these login credentials.
+            </p>
 
-                {/* User ID */}
-                <div>
-                  <label className="text-banking-label block mb-2">
-                    User ID
-                  </label>
-                  <BankingInput
-                    type="text"
-                    value={formData.userId}
-                    onChange={(e) => handleInputChange('userId', e.target.value)}
-                    placeholder="JOSEFINES"
-                    required
-                  />
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">Organisation ID</label>
+                <BankingInput
+                  name="organisationId"
+                  value={formData.organisationId}
+                  onChange={handleInputChange}
+                  className={`w-full ${hasError ? 'border-red-500' : ''}`}
+                />
               </div>
 
-              {/* Warning Message */}
-              <div className="bg-warning/10 border border-warning/30 rounded-md p-4">
-                <div className="flex items-start gap-2">
-                  <span className="text-warning text-lg">⚠️</span>
-                  <p className="text-sm text-warning-foreground">
-                    One or more login credentials are invalid
-                  </p>
-                </div>
+              <div>
+                <label className="block text-sm text-gray-700 mb-1">User ID</label>
+                <BankingInput
+                  name="userId"
+                  value={formData.userId}
+                  onChange={handleInputChange}
+                  className={`w-full ${hasError ? 'border-red-500' : ''}`}
+                />
               </div>
 
-              {/* Terms and Conditions */}
-              <div className="text-center text-sm text-muted-foreground">
-                By clicking "Next", you confirm that you have read and understood, and agree to be bound by our{' '}
-                <Button variant="link" className="p-0 h-auto text-primary hover:text-primary-hover">
+              {hasError && (
+                <div className="flex items-center text-sm text-red-600">
+                  <AlertTriangle size={14} className="mr-1" />
+                  One or more login credentials are invalid
+                </div>
+              )}
+
+              <div className="text-xs text-gray-600 pt-4">
+                By clicking 'Next', you confirm that you have read and understood, and agree to be bound by our{' '}
+                <a href="#" className="text-blue-600 underline">
                   Terms and Conditions
-                </Button>
+                </a>
+                .
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-between pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
+              <div className="flex justify-between pt-6">
+                <Button 
+                  type="button" 
+                  variant="outline" 
                   onClick={handleBack}
                   className="px-8"
                 >
                   Back
                 </Button>
-                <BankingButton type="submit" className="px-8">
+                <Button 
+                  type="submit"
+                  className="px-8 bg-gray-600 hover:bg-gray-700 text-white"
+                >
                   Next
-                </BankingButton>
+                </Button>
               </div>
             </form>
-          </BankingCardContent>
-        </BankingCard>
+          </div>
+        </div>
       </div>
-    </LoginLayout>
+    </div>
   );
 };
 

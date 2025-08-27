@@ -13,43 +13,39 @@ interface WizardStepsProps {
 
 const WizardSteps: React.FC<WizardStepsProps> = ({ steps }) => {
   return (
-    <div className="flex items-center justify-between mb-8">
+    <div className="flex flex-col space-y-6 w-64">
       {steps.map((step, index) => (
         <React.Fragment key={step.number}>
-          <div className="flex items-center">
-            <div
-              className={`
-                w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border-2
-                ${step.isCompleted
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : step.isActive
-                  ? 'bg-background text-primary border-primary'
-                  : 'bg-muted text-muted-foreground border-muted'
-                }
-              `}
-            >
-              {step.isCompleted ? '✓' : step.number}
-            </div>
-            <span
-              className={`
-                ml-2 text-sm font-medium
-                ${step.isActive ? 'text-foreground' : 'text-muted-foreground'}
-              `}
-            >
-              {step.label}
-            </span>
-          </div>
-          
-          {index < steps.length - 1 && (
-            <div className="flex-1 mx-4">
+          <div className="flex items-start">
+            <div className="flex flex-col items-center">
               <div
                 className={`
-                  h-0.5
-                  ${step.isCompleted ? 'bg-primary' : 'bg-muted'}
+                  w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2
+                  ${step.isCompleted
+                    ? 'bg-primary text-white border-primary'
+                    : step.isActive
+                    ? 'bg-primary text-white border-primary'
+                    : 'bg-gray-100 text-gray-400 border-gray-200'
+                  }
                 `}
-              ></div>
+              >
+                {step.isCompleted ? '✓' : step.number}
+              </div>
+              {index < steps.length - 1 && (
+                <div className="w-px h-12 bg-gray-200 mt-2"></div>
+              )}
             </div>
-          )}
+            <div className="ml-4 flex-1">
+              <span
+                className={`
+                  text-sm font-medium block
+                  ${step.isActive ? 'text-gray-900' : 'text-gray-500'}
+                `}
+              >
+                {step.label}
+              </span>
+            </div>
+          </div>
         </React.Fragment>
       ))}
     </div>
