@@ -6,6 +6,7 @@ import { BankingCard, BankingCardContent } from '@/components/ui/banking-card';
 import { BankingInput } from '@/components/ui/banking-input';
 import { BankingButton } from '@/components/ui/banking-button';
 import { Button } from '@/components/ui/button';
+import bankingHeroBg from '@/assets/banking-hero-bg.jpg';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
