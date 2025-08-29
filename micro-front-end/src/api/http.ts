@@ -3,6 +3,10 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK === 'true';
 
+// Auto-enable fallback for deployed environments trying to reach localhost
+const isDeployedEnvironment = window.location.protocol === 'https:' && API_BASE_URL.includes('localhost');
+const SHOULD_USE_FALLBACK = USE_MOCK_FALLBACK || isDeployedEnvironment;
+
 export const httpClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
@@ -28,13 +32,28 @@ httpClient.interceptors.request.use(
 httpClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // Check if it's a network error and fallback is enabled
-    if (USE_MOCK_FALLBACK && (error.code === 'NETWORK_ERROR' || error.code === 'ECONNREFUSED' || !error.response)) {
-      console.log('Backend unavailable, attempting fallback to mock data');
+    // Enhanced fallback detection for network errors, CORS, mixed content, etc.
+    const networkErrors = [
+      'NETWORK_ERROR', 
+      'ECONNREFUSED', 
+      'ERR_NETWORK',
+      'ERR_FAILED',
+      'ERR_BLOCKED_BY_CLIENT'
+    ];
+    
+    const shouldFallback = SHOULD_USE_FALLBACK && (
+      !error.response || // No response at all
+      networkErrors.includes(error.code) || // Network errors
+      error.message?.includes('Mixed Content') || // HTTPS->HTTP blocked
+      error.message?.includes('net::ERR_') // Chrome network errors
+    );
+    
+    if (shouldFallback) {
+      console.log('Backend unavailable (likely HTTPS->HTTP or network error), using mock data');
       
       // Try to extract original request info for fallback
       const originalRequest = error.config;
-      if (originalRequest?.url && originalRequest?.data) {
+      if (originalRequest?.url) {
         return handleMockFallback(originalRequest.url, originalRequest.data);
       }
     }
