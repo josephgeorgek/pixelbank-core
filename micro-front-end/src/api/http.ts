@@ -41,7 +41,7 @@ httpClient.interceptors.response.use(
       'ERR_BLOCKED_BY_CLIENT'
     ];
     
-    const shouldFallback = SHOULD_USE_FALLBACK && (
+    const shouldFallback = (
       !error.response || // No response at all
       networkErrors.includes(error.code) || // Network errors
       error.message?.includes('Mixed Content') || // HTTPS->HTTP blocked
@@ -54,7 +54,8 @@ httpClient.interceptors.response.use(
       // Try to extract original request info for fallback
       const originalRequest = error.config;
       if (originalRequest?.url) {
-        return handleMockFallback(originalRequest.url, originalRequest.data);
+        const payload = typeof originalRequest.data === 'string' ? safelyParseJson(originalRequest.data) : originalRequest.data;
+        return handleMockFallback(originalRequest.url, payload);
       }
     }
     
@@ -120,6 +121,10 @@ const handleMockFallback = async (url: string, data: any) => {
   
   // Default fallback
   return { data: { success: false, message: 'Service unavailable' } };
+};
+
+const safelyParseJson = (text: string) => {
+  try { return JSON.parse(text); } catch { return {}; }
 };
 
 // Enhanced API service functions with backend integration
