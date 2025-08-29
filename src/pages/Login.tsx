@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginLayout from '@/components/LoginLayout';
-
+import { authService, LoginRequest } from '@/api/http';
 import { BankingCard, BankingCardContent } from '@/components/ui/banking-card';
 import { BankingInput } from '@/components/ui/banking-input';
 import { BankingButton } from '@/components/ui/banking-button';
@@ -21,13 +21,15 @@ const Login: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate login logic
-    console.log('Login attempt:', formData);
-    // Navigate to dashboard or next step
+    try {
+      const res = await authService.login(formData as LoginRequest);
+      console.log('Login response:', res);
+    } catch (err: any) {
+      console.error('Login failed:', err?.message || err);
+    }
   };
-
   return (
     <LoginLayout>
         <BankingCard className="w-full">
