@@ -1,0 +1,309 @@
+{
+  "info": {
+    "name": "Agentic Staff Workflow APIs",
+    "_postman_id": "c3b1d3a0-8a4c-4d7d-9c0d-8a7d5f1b2e11",
+    "description": "Postman collection for ms-agentic-conversation, agt-staff-orchestrator, agt-staff-access-guard, agt-staff-fulfillment, and agt-staff-intent.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "conversation_base_url",
+      "value": "http://localhost:9080"
+    },
+    {
+      "key": "orchestrator_base_url",
+      "value": "http://localhost:9081"
+    },
+    {
+      "key": "intent_base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "guard_base_url",
+      "value": "http://localhost:8082"
+    },
+    {
+      "key": "fulfillment_base_url",
+      "value": "http://localhost:8083"
+    },
+    {
+      "key": "executionId",
+      "value": "REPLACE_ME"
+    },
+    {
+      "key": "conversationId",
+      "value": "REPLACE_ME"
+    },
+    {
+      "key": "staffId",
+      "value": "M12345"
+    },
+    {
+      "key": "userRole",
+      "value": "MANAGER"
+    },
+    {
+      "key": "displayName",
+      "value": "Joseph George"
+    }
+  ],
+  "item": [
+    {
+      "name": "Intent Service",
+      "item": [
+        {
+          "name": "Discover Intent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{intent_base_url}}/v1/intent/discover",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"List all pending Medical leaves with medical certificate pending for my approval\",\n  \"userRole\": \"{{userRole}}\",\n  \"userId\": \"{{staffId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "url": "{{intent_base_url}}/actuator/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Access Guard",
+      "item": [
+        {
+          "name": "Evaluate Guard",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{guard_base_url}}/v1/guard/evaluate",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"intent\": \"STAFF_LEAVE_APPLICATION_MEDICAL_CERT_LIST_AND_REVIEW\",\n  \"entities\": {\n    \"scope\": \"all pending medical leave applications under manager\",\n    \"status\": \"pending\",\n    \"certificateStatus\": \"pending\"\n  },\n  \"serviceName\": \"ms-staff-leave\",\n  \"serviceId\": \"svc-staff-leave-001\",\n  \"domain\": \"HR\",\n  \"function\": \"LeaveApprovalListing\",\n  \"action\": \"VIEW\",\n  \"userId\": \"{{staffId}}\",\n  \"userRole\": \"{{userRole}}\",\n  \"userContext\": {\n    \"userId\": \"{{staffId}}\",\n    \"role\": \"{{userRole}}\"\n  }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fulfillment",
+      "item": [
+        {
+          "name": "Execute - List Pending Leaves",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{fulfillment_base_url}}/v1/tasks/execute",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceName\": \"ms-staff-leave\",\n  \"serviceId\": \"svc-staff-leave-001\",\n  \"domain\": \"HR\",\n  \"function\": \"LeaveApprovalListing\",\n  \"action\": \"LIST_PENDING\",\n  \"userId\": \"{{staffId}}\",\n  \"userRole\": \"{{userRole}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Execute - Approve Matching Leaves",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{fulfillment_base_url}}/v1/tasks/execute",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceName\": \"ms-staff-leave\",\n  \"serviceId\": \"svc-staff-leave-001\",\n  \"domain\": \"HR\",\n  \"function\": \"LeaveApproval\",\n  \"action\": \"APPROVE\",\n  \"approvalMode\": \"MATCH_TRUE_ONLY\",\n  \"userId\": \"{{staffId}}\",\n  \"userRole\": \"{{userRole}}\",\n  \"leaveApplications\": [\n    {\n      \"leaveId\": \"ML-1001\",\n      \"patientName\": \"John Tan\",\n      \"medicalLeaveDateFrom\": \"2026-04-07\",\n      \"medicalLeaveDateTo\": \"2026-04-08\",\n      \"match\": true\n    },\n    {\n      \"leaveId\": \"ML-1002\",\n      \"patientName\": \"Asha Devi\",\n      \"medicalLeaveDateFrom\": \"2026-04-08\",\n      \"medicalLeaveDateTo\": \"2026-04-08\",\n      \"match\": true\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "OCR Process",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{fulfillment_base_url}}/v1/tasks/ocr/process",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceName\": \"ms-staff-leave\",\n  \"serviceId\": \"svc-staff-leave-001\",\n  \"domain\": \"HR\",\n  \"function\": \"MedicalCertificateOcrReview\",\n  \"action\": \"OCR_PROCESS\",\n  \"userId\": \"{{staffId}}\",\n  \"userRole\": \"{{userRole}}\",\n  \"leaveApplications\": [\n    {\n      \"leaveId\": \"ML-1001\",\n      \"patientName\": \"John Tan\",\n      \"medicalLeaveDateFrom\": \"2026-04-07\",\n      \"medicalLeaveDateTo\": \"2026-04-08\",\n      \"medicalCertificateFileName\": \"mc_john_tan.pdf\"\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Generate Response - Review Success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{fulfillment_base_url}}/v1/tasks/generate-response",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceName\": \"ms-staff-leave\",\n  \"serviceId\": \"svc-staff-leave-001\",\n  \"domain\": \"HR\",\n  \"function\": \"LeaveReviewResponse\",\n  \"action\": \"GENERATE_RESPONSE\",\n  \"responseMode\": \"SUCCESS_SUMMARY_WITH_NEXT_ACTION\",\n  \"userId\": \"{{staffId}}\",\n  \"outcome\": {\n    \"status\": \"OK\",\n    \"reason\": \"Medical certificate OCR review completed successfully\"\n  },\n  \"domainResult\": {\n    \"summary\": \"5 OCR checks completed\",\n    \"items\": [\n      {\n        \"leaveId\": \"ML-1001\",\n        \"match\": true\n      },\n      {\n        \"leaveId\": \"ML-1002\",\n        \"match\": true\n      }\n    ]\n  },\n  \"responseConfig\": {\n    \"successTitle\": \"Medical leave review completed\",\n    \"nextActionIntent\": \"Proceed with approval for the matching records?\",\n    \"nextActionSelectedIntent\": \"staff_leave_application_medical_cert_approval\",\n    \"nextActionDataFilter\": \"MATCH_TRUE_ONLY\",\n    \"includeDomainData\": true\n  }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orchestrator",
+      "item": [
+        {
+          "name": "Start Workflow - Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{orchestrator_base_url}}/v1/workflows/start",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"graphId\": \"staff_leave_application_medical_cert_list_and_review\",\n  \"input\": {\n    \"userContext\": {\n      \"userId\": \"{{staffId}}\",\n      \"role\": \"{{userRole}}\",\n      \"displayName\": \"{{displayName}}\"\n    }\n  },\n  \"intentResult\": {\n    \"intent\": \"STAFF_LEAVE_APPLICATION_MEDICAL_CERT_LIST_AND_REVIEW\",\n    \"entities\": {\n      \"scope\": \"all pending medical leave applications under manager\",\n      \"status\": \"pending\",\n      \"certificateStatus\": \"pending\"\n    }\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Start Workflow - Approval Transition",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{orchestrator_base_url}}/v1/workflows/start",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"graphId\": \"staff_leave_application_medical_cert_approval\",\n  \"input\": {\n    \"userContext\": {\n      \"userId\": \"{{staffId}}\",\n      \"role\": \"{{userRole}}\",\n      \"displayName\": \"{{displayName}}\"\n    },\n    \"domainData\": {\n      \"items\": [\n        {\n          \"leaveId\": \"ML-1001\",\n          \"patientName\": \"John Tan\",\n          \"medicalLeaveDateFrom\": \"2026-04-07\",\n          \"medicalLeaveDateTo\": \"2026-04-08\",\n          \"match\": true\n        }\n      ],\n      \"summary\": \"1 record matched\"\n    },\n    \"previousExecutionId\": \"{{executionId}}\",\n    \"transitionIntent\": \"Proceed with approval for the matching records?\",\n    \"userDecision\": \"PROCEED\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Resume Workflow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{orchestrator_base_url}}/v1/workflows/resume",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"executionId\": \"{{executionId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Workflow",
+          "request": {
+            "method": "GET",
+            "url": "{{orchestrator_base_url}}/v1/workflows/{{executionId}}"
+          }
+        },
+        {
+          "name": "Get Workflow Events",
+          "request": {
+            "method": "GET",
+            "url": "{{orchestrator_base_url}}/v1/workflows/{{executionId}}/events"
+          }
+        },
+        {
+          "name": "Get Workflow States",
+          "request": {
+            "method": "GET",
+            "url": "{{orchestrator_base_url}}/v1/workflows/{{executionId}}/states"
+          }
+        },
+        {
+          "name": "Agentic Execute",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{orchestrator_base_url}}/v1/agentic/execute",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversationId\": \"{{conversationId}}\",\n  \"staffId\": \"{{staffId}}\",\n  \"userRole\": \"{{userRole}}\",\n  \"userPrompt\": \"List all pending Medical leaves with medical certificate pending for my approval\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Conversation",
+      "item": [
+        {
+          "name": "Initiate Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{conversation_base_url}}/v1/conversation/initiate",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"staffId\": \"{{staffId}}\",\n  \"userRole\": \"{{userRole}}\",\n  \"userPrompt\": \"List all pending Medical leaves with medical certificate pending for my approval\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Transit Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{conversation_base_url}}/v1/conversation/transit",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversationId\": \"{{conversationId}}\",\n  \"executionId\": \"{{executionId}}\",\n  \"userDecision\": \"PROCEED\",\n  \"nextActionIntent\": \"Proceed with approval for the matching records?\",\n  \"nextActionSelectedIntent\": \"staff_leave_application_medical_cert_approval\",\n  \"userContext\": {\n    \"userId\": \"{{staffId}}\",\n    \"role\": \"{{userRole}}\",\n    \"displayName\": \"{{displayName}}\"\n  },\n  \"domainData\": {\n    \"items\": [\n      {\n        \"leaveId\": \"ML-1001\",\n        \"patientName\": \"John Tan\",\n        \"medicalLeaveDateFrom\": \"2026-04-07\",\n        \"medicalLeaveDateTo\": \"2026-04-08\",\n        \"match\": true\n      },\n      {\n        \"leaveId\": \"ML-1002\",\n        \"patientName\": \"Asha Devi\",\n        \"medicalLeaveDateFrom\": \"2026-04-08\",\n        \"medicalLeaveDateTo\": \"2026-04-08\",\n        \"match\": true\n      }\n    ],\n    \"summary\": \"2 records matched\",\n    \"stats\": {\n      \"total\": 2,\n      \"matched\": 2,\n      \"mismatched\": 0\n    }\n  }\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
